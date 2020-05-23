@@ -11,6 +11,7 @@ import (
 	"strconv"
 )
 
+// LastNBlocks defines limit of blocks showed in tail when requested
 const LastNBlocks = 100
 
 // HandlerService to operate with handlers
@@ -37,7 +38,7 @@ func GetHandlerService() *HandlerService {
 	return NewHandlerService(repository.NewGetService(), repository.NewStoreService())
 }
 
-// HandleGetBlock handles GET request on get block by hash
+// HandleGetLastBlocks handles GET request on get last N blocks
 func (s *HandlerService) HandleGetLastBlocks(w http.ResponseWriter, r *http.Request) {
 	bytes, err := json.MarshalIndent(s.GetService.GetLast(LastNBlocks), "", "  ")
 	if err != nil {

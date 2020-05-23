@@ -22,6 +22,7 @@ type Message struct {
 	Description *string `json:"description"`
 }
 
+// CalculateHash calculates hash based on Block
 func CalculateHash(block Block) string {
 	record := string(block.Index) + block.Timestamp + string(block.BPM) + block.PrevHash
 	h := sha256.New()

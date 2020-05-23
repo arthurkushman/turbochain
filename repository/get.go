@@ -7,11 +7,13 @@ import (
 	"time"
 )
 
+// Getter defines getter methods for storage repository
 type Getter interface {
 	Get(hash string) components.Block
 	GetLast(n int) []components.Block
 }
 
+// GetService receiver type for select methods
 type GetService struct{}
 
 // NewGetService creates get service
