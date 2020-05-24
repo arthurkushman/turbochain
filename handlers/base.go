@@ -40,7 +40,12 @@ func GetHandlerService() *HandlerService {
 
 // HandleGetLastBlocks handles GET request on get last N blocks
 func (s *HandlerService) HandleGetLastBlocks(w http.ResponseWriter, r *http.Request) {
-	bytes, err := json.MarshalIndent(s.GetService.GetLast(LastNBlocks), "", "  ")
+	limit, _ := strconv.Atoi(r.FormValue("limit"))
+	if limit <= 0 || limit > LastNBlocks {
+		limit = LastNBlocks
+	}
+
+	bytes, err := json.MarshalIndent(s.GetService.GetLast(limit), "", "  ")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -82,7 +87,7 @@ func (s *HandlerService) HandleWriteBlock(w http.ResponseWriter, r *http.Request
 	defer r.Body.Close()
 
 	prevBlock := s.GetService.GetLast(1)[0]
-	newBlock, err := components.GenerateBlock(prevBlock, m.BPM)
+	newBlock, err := components.GenerateBlock(prevBlock, m)
 	if err != nil {
 		respondWithJSON(w, http.StatusInternalServerError, m)
 		return

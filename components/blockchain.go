@@ -8,11 +8,11 @@ import (
 
 // Block the repetitive block of chain
 type Block struct {
-	Index     int
-	Timestamp string
-	BPM       int
-	Hash      string
-	PrevHash  string
+	Index     int      `json:"index"`
+	Timestamp string   `json:"timestamp"`
+	Hash      string   `json:"hash"`
+	PrevHash  string   `json:"prev_hash"`
+	Msg       *Message `json:"message"`
 }
 
 // Message for BPM in POST
@@ -24,7 +24,7 @@ type Message struct {
 
 // CalculateHash calculates hash based on Block
 func CalculateHash(block Block) string {
-	record := string(block.Index) + block.Timestamp + string(block.BPM) + block.PrevHash
+	record := string(block.Index) + block.Timestamp + string(block.Msg.BPM) + block.PrevHash
 	h := sha256.New()
 	h.Write([]byte(record))
 	hashed := h.Sum(nil)
@@ -32,14 +32,23 @@ func CalculateHash(block Block) string {
 }
 
 // GenerateBlock generates new block based on prev
-func GenerateBlock(oldBlock Block, BPM int) (Block, error) {
+func GenerateBlock(prevBlock Block, msg Message) (Block, error) {
 	var newBlock Block
 	t := time.Now()
 
-	newBlock.Index = oldBlock.Index + 1
+	newBlock.Index = prevBlock.Index + 1
 	newBlock.Timestamp = t.String()
-	newBlock.BPM = BPM
-	newBlock.PrevHash = oldBlock.Hash
+	newBlock.PrevHash = prevBlock.Hash
+
+	newBlock.Msg = &Message{}
+	newBlock.Msg.BPM = msg.BPM
+	if msg.Title != nil {
+		newBlock.Msg.Title = msg.Title
+	}
+
+	if msg.Description != nil {
+		newBlock.Msg.Description = msg.Description
+	}
 	newBlock.Hash = CalculateHash(newBlock)
 
 	return newBlock, nil

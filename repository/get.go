@@ -53,13 +53,8 @@ func GetGenesisBlock() components.Block {
 	return components.Block{
 		0,
 		t.String(),
-		0,
 		components.CalculateHash(
-			components.Block{
-				0,
-				t.String(),
-				0,
-				"",
-				""}),
-		""}
+			components.Block{0, t.String(), "", "", &components.Message{}}),
+		"",
+		&components.Message{}}
 }
