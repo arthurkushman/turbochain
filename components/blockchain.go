@@ -1,8 +1,9 @@
 package components
 
 import (
-	"crypto/sha256"
+	"crypto/sha512"
 	"encoding/hex"
+	"strconv"
 	"time"
 )
 
@@ -24,8 +25,8 @@ type Message struct {
 
 // CalculateHash calculates hash based on Block
 func CalculateHash(block Block) string {
-	record := string(block.Index) + block.Timestamp + string(block.Msg.BPM) + block.PrevHash
-	h := sha256.New()
+	record := strconv.Itoa(block.Index) + block.Timestamp + strconv.Itoa(block.Msg.BPM) + block.PrevHash
+	h := sha512.New()
 	h.Write([]byte(record))
 	hashed := h.Sum(nil)
 	return hex.EncodeToString(hashed)
